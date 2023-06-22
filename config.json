@@ -1,0 +1,6 @@
+{
+    "maintenance_mode" : "false",
+    "mariadb_use_privilaged_account" : "false",
+    "mariadb_password" : "",
+    "mariadb_root_password" : ""
+}
