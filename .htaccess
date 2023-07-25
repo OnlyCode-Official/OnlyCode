@@ -1,7 +1,6 @@
 <IfModule mod_rewrite.c>
 RewriteEngine On
 RewriteCond %{REQUEST_URI} !^/phpmyadmin [NC]
-RewriteCond %{REQUEST_URI} !\.(png|gif|ico)$ [NC]
 RewriteRule ^(.*)$ index.php [L]
 
 

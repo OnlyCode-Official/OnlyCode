@@ -1,8 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="shortcut icon apple-touch-icon mask-icon" href="https://onlycode-official.github.io/icons/favicon.ico" type="image/x-icon" color="#000000"></link>
+</head>
+</html>
+
 <?php
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
-include "checkIP.php";
+require "checkBan.php";
 
 function route($url){
     
@@ -16,6 +27,9 @@ function route($url){
         'login' => 'login',
         'signup' => 'signup',
         'api' => 'api',
+        'logout' => 'logout',
+        'admin' => 'admin',
+        'test' => 'test',
     ];
     if (empty($url[0])){
         return "home";
@@ -44,6 +58,7 @@ $file = $router_output . ".php";
 include "$file";
 
 include 'dbconn.php';
+
 
 
 
