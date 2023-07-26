@@ -53,8 +53,6 @@
         $stmt->bind_param("ss", $clientIP, $username);
         
         $stmt->execute();
-        
-
 
         $stmt->close();
         

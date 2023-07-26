@@ -12,9 +12,9 @@ foreach ($pathParts as $index => $part) {
     $parsed_url[$index] = $part;
 }
 
-if (empty($parsed_url[1])){
+if (empty($parsed_url[1])) {
     require "404.php";
-} elseif ($parsed_url[1] == "signup"){
+} elseif ($parsed_url[1] == "signup") {
 
     $username = $_POST['username'];
     $email = $_POST['email'];
@@ -86,7 +86,7 @@ if (empty($parsed_url[1])){
 
     mysqli_close($conn);
 
-} elseif ($parsed_url[1] == "login"){
+} elseif ($parsed_url[1] == "login") {
     $password = $_POST['password'];
     $username = $_POST['username'];
 
@@ -126,6 +126,52 @@ if (empty($parsed_url[1])){
     } else {
         header("Location: /login/error");
     }
+
+} elseif ($parsed_url[1] == "suspend") {
+    if (isset($_SESSION["loggedin"]) && isset($_SESSION["loggedin"]) === true) {
+
+        if (isset($_POST['user'])) {
+            $user = $_POST['user'];
+        } else {
+            echo "User is required";
+            exit;
+        }
+
+        $username = $_SESSION["username"];
+
+        $querry = "SELECT `id`, `admin` FROM users WHERE username = ?";
+        $stmt = $conn->prepare($querry);
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $stmt->bind_result($id, $admin);
+        $stmt->fetch();
+        
+        if ($admin != true && $id != 1) {
+            echo "Permission Denied";
+            exit();
+        }
+    
+        $stmt->close();
+
+        $querry = "UPDATE `users` SET `suspended` = ? WHERE `username` = ?";
+
+        $stmt = $conn->prepare($querry);
+
+        $value = 1;
+        
+        $stmt->bind_param("ss", $value, $username);
+        
+        $stmt->execute();
+
+        $stmt->close();
+
+        header("Location: /admin/users");
+
+    } else {
+        echo "Permission Denied";
+        exit();
+    }
+} elseif ($parsed_url[1] == "terminate") {
 
 } else {
     require "404.php";
