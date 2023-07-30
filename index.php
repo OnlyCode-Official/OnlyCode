@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="shortcut icon apple-touch-icon mask-icon" href="https://onlycode-official.github.io/icons/favicon.ico" type="image/x-icon" color="#000000"></link>
+    <link rel="icon shortcut" type="image/png" href="https://onlycode-official.github.io/icons/favicon.ico">
 </head>
 </html>
 

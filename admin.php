@@ -165,6 +165,22 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
             animation-duration: 0.4s
         }
 
+        .user_action_button {
+            width: 100%;
+            max-width: 150px;
+            background-color: #3bd0e1;
+            color: white;
+            padding: 10px;
+            border: none;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            margin: 10px 0;
+            cursor: pointer;
+            border-radius: 1rem;
+        }
+
         @-webkit-keyframes animatetop {
             from {top:-300px; opacity:0} 
             to {top:0; opacity:1}
@@ -204,7 +220,8 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
         }
 
         .user-info,
-        .user-stats {
+        .user-stats,
+        .user-actions {
             margin-left: 20px;
             padding-top: 5px;
             padding-bottom: 5px;
@@ -365,20 +382,30 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
 
                 if ($admin == 1) {
                     $admin = "Yes";
+                    $action2 = "Demote user";
+                    $task2 = "demote";
                 } else {
                     $admin = "No";
+                    $action2 = "Promote user";
+                    $task2 = "promote";
                 }
 
                 if ($suspended == 1){
                     $suspended = "Yes";
+                    $action1 = "Unsuspend user";
+                    $task1 = "unsuspend";
                 } else {
                     $suspended = "No";
+                    $action1 = "Suspend user";
+                    $task1 = "suspend";
                 }
 
                 if ($terminated == 1){
                     $terminated = "Yes";
                 } else {
                     $terminated = "No";
+                    $action3 = "Terminate user";
+                    $task3 = "terminate";
                 }
 
                 
@@ -410,12 +437,31 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
                                     <span class='svg'><svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-circle-dot'><circle cx='12' cy='12' r='10'/><circle cx='12' cy='12' r='1'/></svg></span> Issues: $issue
                                     <br>
                                     <span class='svg'><svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-git-pull-request'><circle cx='18' cy='18' r='3'/><circle cx='6' cy='6' r='3'/><path d='M13 6h3a2 2 0 0 1 2 2v7'/><line x1='6' x2='6' y1='9' y2='21'/></svg></span> Pull Requests: $pr
-                                </div>
+                                </div>";
+                                if ($terminated == "No"){
+                                    echo "
+                                    <h4>Danger Zone:</h4>
+                                    <div class='user-actions'>
+                                        <a href='/api/$task1/$username' class='user_action_button'>$action1</a>
+                                        <br>
+                                        <a href='/api/$task2/$username' class='user_action_button'>$action2</a>
+                                        <br>
+                                        <a href='/api/$task3/$username' class='user_action_button'>$action3</a>
+                                        <br>
+                                    </div>
+                                    ";
+                                } else {
+                                    echo "
+                                        <h4>Danger Zone:</h4>
+                                        <h5>User settings is disabled because the user is terminated.</h5>
+                                    ";
+                                }
+                                    echo "
                                 <br>
                             <!--
                             </div>
                                 <div class='modal-footer'>
-                                <h3>Lorem ipsum sit amet</h3>
+                                <h3></h3>
                             </div>
                             -->
                         </div>

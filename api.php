@@ -130,12 +130,38 @@ if (empty($parsed_url[1])) {
 } elseif ($parsed_url[1] == "suspend") {
     if (isset($_SESSION["loggedin"]) && isset($_SESSION["loggedin"]) === true) {
 
-        if (isset($_POST['user'])) {
-            $user = $_POST['user'];
+        if (isset($parsed_url[2])) {
+            $user = $parsed_url[2];
         } else {
             echo "User is required";
             exit;
         }
+
+
+        $querry = "SELECT `suspended`, `terminated` FROM users WHERE username = ?";
+
+        $stmt = $conn->prepare($querry);
+
+        $stmt->bind_param("s", $user);
+
+        $stmt->execute();
+
+        $stmt->bind_result($suspended, $terminated);
+
+        $stmt->fetch();
+        
+        if (!isset($suspended)) {
+            echo "User does not exist";
+            exit();
+        } elseif ($suspended == 1) {
+            echo "User is already suspended";
+            exit();
+        } elseif ($terminated == 1) {
+            echo "User is terminated";
+            exit();
+        }
+
+        $stmt->close();
 
         $username = $_SESSION["username"];
 
@@ -159,19 +185,370 @@ if (empty($parsed_url[1])) {
 
         $value = 1;
         
-        $stmt->bind_param("ss", $value, $username);
+        $stmt->bind_param("ss", $value, $user);
         
         $stmt->execute();
 
         $stmt->close();
 
-        header("Location: /admin/users");
+        header("Location: /admin/users/manage/$user");
+
+    } else {
+        echo "Permission Denied";
+        exit();
+    }
+} elseif ($parsed_url[1] == "unsuspend") {
+    if (isset($_SESSION["loggedin"]) && isset($_SESSION["loggedin"]) === true) {
+
+        if (isset($parsed_url[2])) {
+            $user = $parsed_url[2];
+        } else {
+            echo "User is required";
+            exit;
+        }
+
+
+        $querry = "SELECT `suspended`, `terminated` FROM users WHERE username = ?";
+
+        $stmt = $conn->prepare($querry);
+
+        $stmt->bind_param("s", $user);
+
+        $stmt->execute();
+
+        $stmt->bind_result($suspended, $terminated);
+
+        $stmt->fetch();
+        
+        if (!isset($suspended)) {
+            echo "User does not exist";
+            exit();
+        } elseif ($suspended == 0) {
+            echo "User is not suspended";
+            exit();
+        } elseif ($terminated == 1) {
+            echo "User is terminated";
+            exit();
+        }
+
+        $stmt->close();
+
+        $username = $_SESSION["username"];
+
+        $querry = "SELECT `id`, `admin` FROM users WHERE username = ?";
+        $stmt = $conn->prepare($querry);
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $stmt->bind_result($id, $admin);
+        $stmt->fetch();
+        
+        if ($admin != true && $id != 1) {
+            echo "Permission Denied";
+            exit();
+        }
+    
+        $stmt->close();
+
+        $querry = "UPDATE `users` SET `suspended` = ? WHERE `username` = ?";
+
+        $stmt = $conn->prepare($querry);
+
+        $value = 0;
+        
+        $stmt->bind_param("ss", $value, $user);
+        
+        $stmt->execute();
+
+        $stmt->close();
+
+        header("Location: /admin/users/manage/$user");
 
     } else {
         echo "Permission Denied";
         exit();
     }
 } elseif ($parsed_url[1] == "terminate") {
+    if (isset($_SESSION["loggedin"]) && isset($_SESSION["loggedin"]) === true) {
+
+        if (isset($parsed_url[2])) {
+            $user = $parsed_url[2];
+        } else {
+            echo "User is required";
+            exit;
+        }
+
+
+        $querry = "SELECT `terminated` FROM users WHERE username = ?";
+
+        $stmt = $conn->prepare($querry);
+
+        $stmt->bind_param("s", $user);
+
+        $stmt->execute();
+
+        $stmt->bind_result($terminated);
+
+        $stmt->fetch();
+        
+        if (!isset($terminated)) {
+            echo "User does not exist";
+            exit();
+        } elseif ($terminated == 1) {
+            echo "User is already terminated";
+            exit();
+        }
+
+        $stmt->close();
+
+        $username = $_SESSION["username"];
+
+        $querry = "SELECT `id`, `admin` FROM users WHERE username = ?";
+        $stmt = $conn->prepare($querry);
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $stmt->bind_result($id, $admin);
+        $stmt->fetch();
+        
+        if ($admin != true && $id != 1) {
+            echo "Permission Denied";
+            exit();
+        }
+    
+        $stmt->close();
+
+        $querry = "UPDATE `users` SET `suspended` = ?, `terminated` = ? WHERE `username` = ?";
+
+        $stmt = $conn->prepare($querry);
+
+        $value1 = 0;
+
+        $value2 = 1;
+        
+        $stmt->bind_param("sss", $value1, $value2, $user);
+        
+        $stmt->execute();
+
+        $stmt->close();
+
+        header("Location: /admin/users/manage/$user");
+
+    } else {
+        echo "Permission Denied";
+        exit();
+    }
+} elseif ($parsed_url[1] == "promote") {
+    if (isset($_SESSION["loggedin"]) && isset($_SESSION["loggedin"]) === true) {
+
+        if (isset($parsed_url[2])) {
+            $user = $parsed_url[2];
+        } else {
+            echo "User is required";
+            exit;
+        }
+
+
+        $querry = "SELECT `suspended`, `terminated`, `admin` FROM users WHERE username = ?";
+
+        $stmt = $conn->prepare($querry);
+
+        $stmt->bind_param("s", $user);
+
+        $stmt->execute();
+
+        $stmt->bind_result($suspended, $terminated, $admin);
+
+        $stmt->fetch();
+        
+        if (!isset($admin)) {
+            echo "User does not exist";
+            exit();
+        } elseif ($admin == 1) {
+            echo "User is already an admin";
+            exit();
+        } elseif ($suspended == 1) {
+            echo "User is suspended";
+            exit();
+        } elseif ($terminated == 1) {
+            echo "User is terminated";
+            exit();
+        }
+
+        $stmt->close();
+
+        $username = $_SESSION["username"];
+
+        $querry = "SELECT `id`, `admin` FROM users WHERE username = ?";
+        $stmt = $conn->prepare($querry);
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $stmt->bind_result($id, $admin);
+        $stmt->fetch();
+        
+        if ($admin != true && $id != 1) {
+            echo "Permission Denied";
+            exit();
+        }
+    
+        $stmt->close();
+
+        $querry = "UPDATE `users` SET `admin` = ? WHERE `username` = ?";
+
+        $stmt = $conn->prepare($querry);
+
+        $value = 1;
+        
+        $stmt->bind_param("ss", $value, $user);
+        
+        $stmt->execute();
+
+        $stmt->close();
+
+        header("Location: /admin/users/manage/$user");
+
+    } else {
+        echo "Permission Denied";
+        exit();
+    }
+
+} elseif ($parsed_url[1] == "promote") {
+    if (isset($_SESSION["loggedin"]) && isset($_SESSION["loggedin"]) === true) {
+
+        if (isset($parsed_url[2])) {
+            $user = $parsed_url[2];
+        } else {
+            echo "User is required";
+            exit;
+        }
+
+
+        $querry = "SELECT `terminated` FROM users WHERE username = ?";
+
+        $stmt = $conn->prepare($querry);
+
+        $stmt->bind_param("s", $user);
+
+        $stmt->execute();
+
+        $stmt->bind_result($terminated);
+
+        $stmt->fetch();
+        
+        if (!isset($terminated)) {
+            echo "User does not exist";
+            exit();
+        } elseif ($terminated == 1) {
+            echo "User is already terminated";
+            exit();
+        }
+
+        $stmt->close();
+
+        $username = $_SESSION["username"];
+
+        $querry = "SELECT `id`, `admin` FROM users WHERE username = ?";
+        $stmt = $conn->prepare($querry);
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $stmt->bind_result($id, $admin);
+        $stmt->fetch();
+        
+        if ($admin != true && $id != 1) {
+            echo "Permission Denied";
+            exit();
+        }
+    
+        $stmt->close();
+
+        $querry = "UPDATE `users` SET `suspended` = ?, `terminated` = ? WHERE `username` = ?";
+
+        $stmt = $conn->prepare($querry);
+
+        $value1 = 0;
+
+        $value2 = 1;
+        
+        $stmt->bind_param("sss", $value1, $value2, $user);
+        
+        $stmt->execute();
+
+        $stmt->close();
+
+        header("Location: /admin/users/manage/$user");
+
+    } else {
+        echo "Permission Denied";
+        exit();
+    }
+} elseif ($parsed_url[1] == "demote") {
+    if (isset($_SESSION["loggedin"]) && isset($_SESSION["loggedin"]) === true) {
+
+        if (isset($parsed_url[2])) {
+            $user = $parsed_url[2];
+        } else {
+            echo "User is required";
+            exit;
+        }
+
+
+        $querry = "SELECT `suspended`, `terminated`, `admin` FROM users WHERE username = ?";
+
+        $stmt = $conn->prepare($querry);
+
+        $stmt->bind_param("s", $user);
+
+        $stmt->execute();
+
+        $stmt->bind_result($suspended, $terminated, $admin);
+
+        $stmt->fetch();
+        
+        if (!isset($admin)) {
+            echo "User does not exist";
+            exit();
+        } elseif ($admin == 0) {
+            echo "User is not admin";
+            exit();
+        } elseif ($terminated == 1) {
+            echo "User is terminated";
+            exit();
+        }
+
+        $stmt->close();
+
+        $username = $_SESSION["username"];
+
+        $querry = "SELECT `id`, `admin` FROM users WHERE username = ?";
+        $stmt = $conn->prepare($querry);
+        $stmt->bind_param("s", $username);
+        $stmt->execute();
+        $stmt->bind_result($id, $admin);
+        $stmt->fetch();
+        
+        if ($admin != true && $id != 1) {
+            echo "Permission Denied";
+            exit();
+        }
+    
+        $stmt->close();
+
+        $querry = "UPDATE `users` SET `admin` = ? WHERE `username` = ?";
+
+        $stmt = $conn->prepare($querry);
+
+        $value = 0;
+        
+        $stmt->bind_param("ss", $value, $user);
+        
+        $stmt->execute();
+
+        $stmt->close();
+
+        header("Location: /admin/users/manage/$user");
+
+    } else {
+        echo "Permission Denied";
+        exit();
+    }
 
 } else {
     require "404.php";
