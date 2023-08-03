@@ -1,5 +1,14 @@
 <?php
 
+/**
+ * @var $conn
+ * @var $suspended
+ * @var $terminated
+ * @var $admin
+ * @var $id
+ * @var $stmt
+ */
+
 require "dbconn.php";
 
 $url = $_SERVER['REQUEST_URI'];
@@ -42,9 +51,9 @@ if (empty($parsed_url[1])) {
     } elseif (!preg_match('/^[a-zA-Z0-9_]+$/', trim($username))){
         header('Location: /signup/error/username/invalid');
     } else {
-        $querry = "SELECT `id` FROM `users` WHERE `username` = ?";
+        $query = "SELECT `id` FROM `users` WHERE `username` = ?";
 
-        if ($stmt = mysqli_prepare($conn, $querry)){
+        if ($stmt = mysqli_prepare($conn, $query)){
             mysqli_stmt_bind_param($stmt, "s", $username);
 
             if (mysqli_stmt_execute($stmt)){
@@ -62,9 +71,9 @@ if (empty($parsed_url[1])) {
 
     mysqli_stmt_close($stmt);
 
-    $querry = "INSERT INTO `users` (`username`, `password`, `name`, `email`, `signup_ip`, `current_ip`) VALUES (?, ?, ?, ?, ?, ?)";
+    $query = "INSERT INTO `users` (`username`, `password`, `name`, `email`, `signup_ip`, `current_ip`) VALUES (?, ?, ?, ?, ?, ?)";
 
-    if($stmt = mysqli_prepare($conn, $querry)){
+    if($stmt = mysqli_prepare($conn, $query)){
 
         $clientIP = $_SERVER['REMOTE_ADDR'];
         
@@ -94,9 +103,9 @@ if (empty($parsed_url[1])) {
         header("Location: /login/error");
     }
 
-    $querry = "SELECT id, username, password FROM users WHERE username = ?";
+    $query = "SELECT id, username, password FROM users WHERE username = ?";
 
-    if($stmt = mysqli_prepare($conn, $querry)){
+    if($stmt = mysqli_prepare($conn, $query)){
         mysqli_stmt_bind_param($stmt, "s", $username);
 
         if(mysqli_stmt_execute($stmt)){
@@ -138,9 +147,10 @@ if (empty($parsed_url[1])) {
         }
 
 
-        $querry = "SELECT `suspended`, `terminated` FROM users WHERE username = ?";
 
-        $stmt = $conn->prepare($querry);
+        $query = "SELECT `suspended`, `terminated` FROM users WHERE username = ?";
+
+        $stmt = $conn->prepare($query);
 
         $stmt->bind_param("s", $user);
 
@@ -165,28 +175,33 @@ if (empty($parsed_url[1])) {
 
         $username = $_SESSION["username"];
 
-        $querry = "SELECT `id`, `admin` FROM users WHERE username = ?";
-        $stmt = $conn->prepare($querry);
+        if ($user == $username) {
+            echo "You cannot suspend yourself";
+            exit();
+        }
+
+        $query = "SELECT `id`, `admin` FROM users WHERE username = ?";
+        $stmt = $conn->prepare($query);
         $stmt->bind_param("s", $username);
         $stmt->execute();
         $stmt->bind_result($id, $admin);
         $stmt->fetch();
         
-        if ($admin != true && $id != 1) {
+        if (!$admin && $id != 1) {
             echo "Permission Denied";
             exit();
         }
-    
+
         $stmt->close();
 
-        $querry = "UPDATE `users` SET `suspended` = ? WHERE `username` = ?";
+        $query = "UPDATE `users` SET `suspended` = ? WHERE `username` = ?";
 
-        $stmt = $conn->prepare($querry);
+        $stmt = $conn->prepare($query);
 
         $value = 1;
-        
+
         $stmt->bind_param("ss", $value, $user);
-        
+
         $stmt->execute();
 
         $stmt->close();
@@ -208,9 +223,9 @@ if (empty($parsed_url[1])) {
         }
 
 
-        $querry = "SELECT `suspended`, `terminated` FROM users WHERE username = ?";
+        $query = "SELECT `suspended`, `terminated` FROM users WHERE username = ?";
 
-        $stmt = $conn->prepare($querry);
+        $stmt = $conn->prepare($query);
 
         $stmt->bind_param("s", $user);
 
@@ -219,7 +234,7 @@ if (empty($parsed_url[1])) {
         $stmt->bind_result($suspended, $terminated);
 
         $stmt->fetch();
-        
+
         if (!isset($suspended)) {
             echo "User does not exist";
             exit();
@@ -235,28 +250,28 @@ if (empty($parsed_url[1])) {
 
         $username = $_SESSION["username"];
 
-        $querry = "SELECT `id`, `admin` FROM users WHERE username = ?";
-        $stmt = $conn->prepare($querry);
+        $query = "SELECT `id`, `admin` FROM users WHERE username = ?";
+        $stmt = $conn->prepare($query);
         $stmt->bind_param("s", $username);
         $stmt->execute();
         $stmt->bind_result($id, $admin);
         $stmt->fetch();
-        
-        if ($admin != true && $id != 1) {
+
+        if (!$admin && $id != 1) {
             echo "Permission Denied";
             exit();
         }
-    
+
         $stmt->close();
 
-        $querry = "UPDATE `users` SET `suspended` = ? WHERE `username` = ?";
+        $query = "UPDATE `users` SET `suspended` = ? WHERE `username` = ?";
 
-        $stmt = $conn->prepare($querry);
+        $stmt = $conn->prepare($query);
 
         $value = 0;
-        
+
         $stmt->bind_param("ss", $value, $user);
-        
+
         $stmt->execute();
 
         $stmt->close();
@@ -278,9 +293,9 @@ if (empty($parsed_url[1])) {
         }
 
 
-        $querry = "SELECT `terminated` FROM users WHERE username = ?";
+        $query = "SELECT `terminated` FROM users WHERE username = ?";
 
-        $stmt = $conn->prepare($querry);
+        $stmt = $conn->prepare($query);
 
         $stmt->bind_param("s", $user);
 
@@ -289,7 +304,7 @@ if (empty($parsed_url[1])) {
         $stmt->bind_result($terminated);
 
         $stmt->fetch();
-        
+
         if (!isset($terminated)) {
             echo "User does not exist";
             exit();
@@ -302,30 +317,30 @@ if (empty($parsed_url[1])) {
 
         $username = $_SESSION["username"];
 
-        $querry = "SELECT `id`, `admin` FROM users WHERE username = ?";
-        $stmt = $conn->prepare($querry);
+        $query = "SELECT `id`, `admin` FROM users WHERE username = ?";
+        $stmt = $conn->prepare($query);
         $stmt->bind_param("s", $username);
         $stmt->execute();
         $stmt->bind_result($id, $admin);
         $stmt->fetch();
-        
-        if ($admin != true && $id != 1) {
+
+        if (!$admin && $id != 1) {
             echo "Permission Denied";
             exit();
         }
-    
+
         $stmt->close();
 
-        $querry = "UPDATE `users` SET `suspended` = ?, `terminated` = ? WHERE `username` = ?";
+        $query = "UPDATE `users` SET `suspended` = ?, `terminated` = ? WHERE `username` = ?";
 
-        $stmt = $conn->prepare($querry);
+        $stmt = $conn->prepare($query);
 
         $value1 = 0;
 
         $value2 = 1;
-        
+
         $stmt->bind_param("sss", $value1, $value2, $user);
-        
+
         $stmt->execute();
 
         $stmt->close();
@@ -347,9 +362,9 @@ if (empty($parsed_url[1])) {
         }
 
 
-        $querry = "SELECT `suspended`, `terminated`, `admin` FROM users WHERE username = ?";
+        $query = "SELECT `suspended`, `terminated`, `admin` FROM users WHERE username = ?";
 
-        $stmt = $conn->prepare($querry);
+        $stmt = $conn->prepare($query);
 
         $stmt->bind_param("s", $user);
 
@@ -358,7 +373,7 @@ if (empty($parsed_url[1])) {
         $stmt->bind_result($suspended, $terminated, $admin);
 
         $stmt->fetch();
-        
+
         if (!isset($admin)) {
             echo "User does not exist";
             exit();
@@ -377,28 +392,28 @@ if (empty($parsed_url[1])) {
 
         $username = $_SESSION["username"];
 
-        $querry = "SELECT `id`, `admin` FROM users WHERE username = ?";
-        $stmt = $conn->prepare($querry);
+        $query = "SELECT `id`, `admin` FROM users WHERE username = ?";
+        $stmt = $conn->prepare($query);
         $stmt->bind_param("s", $username);
         $stmt->execute();
         $stmt->bind_result($id, $admin);
         $stmt->fetch();
-        
-        if ($admin != true && $id != 1) {
+
+        if (!$admin && $id != 1) {
             echo "Permission Denied";
             exit();
         }
-    
+
         $stmt->close();
 
-        $querry = "UPDATE `users` SET `admin` = ? WHERE `username` = ?";
+        $query = "UPDATE `users` SET `admin` = ? WHERE `username` = ?";
 
-        $stmt = $conn->prepare($querry);
+        $stmt = $conn->prepare($query);
 
         $value = 1;
-        
+
         $stmt->bind_param("ss", $value, $user);
-        
+
         $stmt->execute();
 
         $stmt->close();
@@ -421,9 +436,9 @@ if (empty($parsed_url[1])) {
         }
 
 
-        $querry = "SELECT `terminated` FROM users WHERE username = ?";
+        $query = "SELECT `terminated` FROM users WHERE username = ?";
 
-        $stmt = $conn->prepare($querry);
+        $stmt = $conn->prepare($query);
 
         $stmt->bind_param("s", $user);
 
@@ -432,7 +447,7 @@ if (empty($parsed_url[1])) {
         $stmt->bind_result($terminated);
 
         $stmt->fetch();
-        
+
         if (!isset($terminated)) {
             echo "User does not exist";
             exit();
@@ -445,23 +460,23 @@ if (empty($parsed_url[1])) {
 
         $username = $_SESSION["username"];
 
-        $querry = "SELECT `id`, `admin` FROM users WHERE username = ?";
-        $stmt = $conn->prepare($querry);
+        $query = "SELECT `id`, `admin` FROM users WHERE username = ?";
+        $stmt = $conn->prepare($query);
         $stmt->bind_param("s", $username);
         $stmt->execute();
         $stmt->bind_result($id, $admin);
         $stmt->fetch();
-        
-        if ($admin != true && $id != 1) {
+
+        if (!$admin && $id != 1) {
             echo "Permission Denied";
             exit();
         }
     
         $stmt->close();
 
-        $querry = "UPDATE `users` SET `suspended` = ?, `terminated` = ? WHERE `username` = ?";
+        $query = "UPDATE `users` SET `suspended` = ?, `terminated` = ? WHERE `username` = ?";
 
-        $stmt = $conn->prepare($querry);
+        $stmt = $conn->prepare($query);
 
         $value1 = 0;
 
@@ -490,9 +505,9 @@ if (empty($parsed_url[1])) {
         }
 
 
-        $querry = "SELECT `suspended`, `terminated`, `admin` FROM users WHERE username = ?";
+        $query = "SELECT `suspended`, `terminated`, `admin` FROM users WHERE username = ?";
 
-        $stmt = $conn->prepare($querry);
+        $stmt = $conn->prepare($query);
 
         $stmt->bind_param("s", $user);
 
@@ -517,23 +532,23 @@ if (empty($parsed_url[1])) {
 
         $username = $_SESSION["username"];
 
-        $querry = "SELECT `id`, `admin` FROM users WHERE username = ?";
-        $stmt = $conn->prepare($querry);
+        $query = "SELECT `id`, `admin` FROM users WHERE username = ?";
+        $stmt = $conn->prepare($query);
         $stmt->bind_param("s", $username);
         $stmt->execute();
         $stmt->bind_result($id, $admin);
         $stmt->fetch();
         
-        if ($admin != true && $id != 1) {
+        if (!$admin && $id != 1) {
             echo "Permission Denied";
             exit();
         }
     
         $stmt->close();
 
-        $querry = "UPDATE `users` SET `admin` = ? WHERE `username` = ?";
+        $query = "UPDATE `users` SET `admin` = ? WHERE `username` = ?";
 
-        $stmt = $conn->prepare($querry);
+        $stmt = $conn->prepare($query);
 
         $value = 0;
         
@@ -549,6 +564,58 @@ if (empty($parsed_url[1])) {
         echo "Permission Denied";
         exit();
     }
+
+} elseif ($parsed_url[1] == "takeover") {
+    if (isset($parsed_url[2])) {
+        $user = $parsed_url[2];
+    } else {
+        echo "User is required";
+        exit;
+    }
+
+    $username = $_SESSION["username"];
+
+    $query = "SELECT `admin` FROM users WHERE username = ?";
+
+    $stmt = $conn->prepare($query);
+
+    $stmt->bind_param("s", $username);
+
+    $stmt->execute();
+
+    $stmt->bind_result($admin);
+
+    $stmt->fetch();
+
+    $stmt->close();
+
+    if (!$admin){
+        echo "Permission Denied";
+    }
+
+    $query = "SELECT `id` FROM users WHERE username = ?";
+
+    $stmt = $conn->prepare($query);
+
+    $stmt->bind_param("s", $user);
+
+    $stmt->execute();
+
+    $stmt->bind_result($id);
+
+    $stmt->fetch();
+
+    $stmt->close();
+
+    if (!isset($id)) {
+        echo "User does not exist";
+        exit();
+    }
+
+    $_SESSION["id"] = $id;
+    $_SESSION["username"] = $user;
+    $_SESSION["old_username"] = $username;
+    $_SESSION["taken_over"] = true;
 
 } else {
     require "404.php";

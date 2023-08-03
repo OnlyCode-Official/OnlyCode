@@ -1,5 +1,12 @@
 <?php
 
+/**
+ * @var $conn
+ * @var $admin
+ * @var $id
+ * @var $username
+ */
+
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
@@ -213,11 +220,13 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
 
         .modal-body {padding: 2px 16px;color: white;background-color: #06081f;}
 
-        .modal-footer {
-            padding: 2px 16px;
-            background: rgb(6, 20, 53);
-            color: white;
-        }
+        /*
+            .modal-footer {
+                padding: 2px 16px;
+                background: rgb(6, 20, 53);
+                color: white;
+            }
+         */
 
         .user-info,
         .user-stats,
@@ -234,7 +243,7 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
         <nav>
             <div class='top'>
                 <img src='https://onlycode-official.github.io/icons/small-logo.png' alt='logo' width='100' height='100'>
-                <h3 class="toptext">Site Administration<h3>
+                <h3 class="toptext">Site Administration</h3>
             </div>
             <div class='sidenav-button'>
                 <span class='svg'>
@@ -416,6 +425,7 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
                             <div class='modal-header'>
                                 <span class='close' onclick='closeTools();'>&times;</span>
                                 <h2>$username</h2>
+                                
                             </div>
                             <div class='modal-body'>
                                 <h4>User information:</h4>

@@ -5,6 +5,7 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon shortcut" type="image/png" href="https://onlycode-official.github.io/icons/favicon.ico">
+    <title></title>
 </head>
 </html>
 
@@ -15,7 +16,7 @@ ini_set('display_errors', 1);
 
 require "checkBan.php";
 
-function route($url){
+function route($url): string {
     
     // print_r($url);
 

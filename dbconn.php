@@ -22,7 +22,6 @@ if ($use_root == 'false') {
     } 
 } else {
     $password = $data->mariadb_root_password;
-    echo "$password";
     
     $conn = new mysqli("127.0.0.1", "onlycode_root", $password, "onlycode");
 
@@ -32,5 +31,3 @@ if ($use_root == 'false') {
     echo "YOU ARE USING THE ROOT USER! YOU MAY DAMAGE THE SERVER!";
 }
 
-
-?>
