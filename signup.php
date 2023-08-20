@@ -98,11 +98,11 @@
                     if (!empty($parsed_url[2]) && $parsed_url[1] == "error"){
                         if ($parsed_url[2] == "empty"){
                             if (!empty($parsed_url[3]) && $parsed_url[3] == "username") {
-                                echo "<h4 class='error'>Username can not be empty!</h4>";
+                                echo "<h4 class='error'>Username required!</h4>";
                             } elseif (!empty($parsed_url[3]) && $parsed_url[3] == "email") {
-                                echo "<h4 class='error'>Email can not be empty!</h4>";
+                                echo "<h4 class='error'>Email required!</h4>";
                             } elseif (!empty($parsed_url[3]) && $parsed_url[3] == "password") {
-                                echo "<h4> Password can not be empty!</h4>";
+                                echo "<h4> Password required!</h4>";
                             } elseif (!empty($parsed_url[3]) && $parsed_url[3] == "name") {
                                 echo "<h4 class='error'>Please enter your full name!</h4>";
                             } else {
@@ -110,9 +110,9 @@
                             }
                         } elseif ($parsed_url[2] == "username"){
                             if (!empty($parsed_url[3]) && $parsed_url[3] == "invalid"){
-                                echo "<h4 class='error'>Username can only contain letters and numbers!</h4>";
+                                echo "<h4 class='error'>Username must be alphanumerical!</h4>";
                             } elseif (!empty($parsed_url[3]) && $parsed_url[3] == "taken"){
-                                echo "<h4 class='error'>The username you picked is unavaliable!</h4>";
+                                echo "<h4 class='error'>That username is unavaliable!</h4>";
                             } else {
                                 echo "<h4 class='signup-text'>We'll get you started in no time!</h4>";
                             }
@@ -130,19 +130,19 @@
             <br>
         
         <form action='/api/signup' method='post'>
-            <label>Enter your email:</label><br>
+            <label>Email:</label><br>
             <input type='email' name='email' size='100'>
             <br><br>
-            <label>Create a password:</label><br>
+            <label>Password:</label><br>
             <input type='password' name='password' size='100'>
             <br><br>
-            <label>Confirm your password:</label><br>
+            <label>Confirm password:</label><br>
             <input type='password' name='conf_password' size='100'>
             <br><br>
-            <label>Enter a username:</label><br>
+            <label>Username:</label><br>
             <input type='text' name='username' size='100'>
             <br><br>
-            <label>Enter your full name:</label><br>
+            <label>Full name:</label><br>
             <input type='text' name='name' size='100'>
             <br><br>
             <input type="submit" class="signup-button" value="Sign Up">
