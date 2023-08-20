@@ -28,6 +28,6 @@ if ($use_root == 'false') {
     if ($conn->connect_error) {
         die("Connection failed: " . $conn->connect_error);
     } 
-    echo "YOU ARE USING THE ROOT USER! YOU MAY DAMAGE THE SERVER!";
+    echo "YOU ARE LOGGED IN AS THE ROOT USER! YOU MIGHT DAMAGE THE SERVER!";
 }
 
