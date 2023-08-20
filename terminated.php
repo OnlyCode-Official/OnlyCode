@@ -38,7 +38,7 @@
         <img src="https://onlycode-official.github.io/icons/small-logo.png" alt="logo" height="100" width="100" draggable="false"></img>
         <h1>Account terminated</h3>
 
-        <p class='text'>Your OnlyCode account has been terminated due to a voilation of our terms of service. Sorry for the inconvenience.</p><br><br><br><br>
+        <p class='text'>Your OnlyCode account has been terminated due to a violation of our nonexistant terms of service. <s>Sorry for the inconvenience. </s><b style="color: red;">GET L-ED ON</b></p><br><br><br><br>
     </div>
 </body>
 </html>
