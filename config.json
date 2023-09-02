@@ -1,0 +1,6 @@
+{
+    "maintenance_mode" : "flase",
+    "mariadb_use_privilaged_account" : "false",
+    "mariadb_password" : "OnlyGit_dev",
+    "mariadb_root_password" : "OnlyGit_root_dev"
+}
