@@ -10,7 +10,7 @@ $config = file_get_contents('config.json');
 $data = json_decode($config);
 
 
-$use_root = $data->mariadb_use_privilaged_account;
+$use_root = $data->mariadb_use_root_account;
 
 if ($use_root == 'false') {
     $password = $data->mariadb_password;

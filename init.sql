@@ -15,3 +15,15 @@ CREATE TABLE `users` (
   `signup_ip` VARCHAR(128) NOT NULL,
   `current_ip` VARCHAR(128) NOT NULL
 );
+
+CREATE TABLE `repos` (
+  `id` INT PRIMARY KEY NULL AUTO_INCREMENT,
+  `name` VARCHAR(100) NOT NULL,
+  `description` TEXT NOT NULL,
+  `is_public` BOOLEAN NOT NULL DEFAULT TRUE,
+  `owner` VARCHAR(100) NOT NULL,
+  `collaborators` TEXT NOT NULL,
+  `created_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` DATETIME DEFAULT CURRENT_TIMESTAMP,
+  `flagged` BOOLEAN NOT NULL DEFAULT FALSE
+);

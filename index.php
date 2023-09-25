@@ -30,6 +30,7 @@ function route($url): string {
         'api' => 'api',
         'logout' => 'logout',
         'admin' => 'admin',
+        'create' => 'create',
         'test' => 'test',
     ];
     if (empty($url[0])){

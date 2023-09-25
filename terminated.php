@@ -35,10 +35,10 @@
 </head>
 <body>
     <div class='center'>
-        <img src="https://OnlyGit-official.github.io/icons/small-logo.png" alt="logo" height="100" width="100" draggable="false"></img>
-        <h1>Account terminated</h3>
+        <img src="https://OnlyGit-official.github.io/icons/small-logo.png" alt="logo" height="100" width="100" draggable="false">
+        <h1>Account terminated</h1>
 
-        <p class='text'>Your OnlyGit account has been terminated due to a voilation of our terms of service. Sorry for the inconvenience.</p><br><br><br><br>
+        <p class='text'>Your OnlyGit account has been terminated due to a violation of our terms of service. Sorry for the inconvenience.</p><br><br><br><br>
     </div>
 </body>
 </html>

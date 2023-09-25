@@ -29,10 +29,9 @@ if (empty($parsed_url[1])) {
     $email = $_POST['email'];
     $password = $_POST['password'];
     $conf = $_POST['conf_password'];
-    $name = $_POST['name'];
     $signup_ip = $_SERVER['REMOTE_ADDR'];
 
-    if (empty(trim($username)) || empty(trim($email)) || empty(trim($password)) || empty(trim($conf)) || empty(trim($name))) {
+    if (empty(trim($username)) || empty(trim($email)) || empty(trim($password)) || empty(trim($conf))) {
         
         // header('Location: /signup/error/empty');
 
@@ -42,8 +41,6 @@ if (empty($parsed_url[1])) {
             header('Location: /signup/error/empty/email');
         } elseif (empty(trim($password))){
             header('Location: /signup/error/empty/password');
-        } else {
-            header('Location: /signup/error/empty/name');
         }
 
     } elseif ($password !== $conf) {
@@ -71,14 +68,14 @@ if (empty($parsed_url[1])) {
 
     mysqli_stmt_close($stmt);
 
-    $query = "INSERT INTO `users` (`username`, `password`, `name`, `email`, `signup_ip`, `current_ip`) VALUES (?, ?, ?, ?, ?, ?)";
+    $query = "INSERT INTO `users` (`username`, `password`, `email`, `signup_ip`, `current_ip`) VALUES (?, ?, ?, ?, ?)";
 
     if($stmt = mysqli_prepare($conn, $query)){
 
         $clientIP = $_SERVER['REMOTE_ADDR'];
         
 
-        mysqli_stmt_bind_param($stmt, "ssssss", $username, $password_hash, $name, $email, $signup_ip, $clientIP);
+        mysqli_stmt_bind_param($stmt, "sssss", $username, $password_hash, $email, $signup_ip, $clientIP);
 
         $password_hash = password_hash($password, PASSWORD_DEFAULT);
 
@@ -605,7 +602,7 @@ if (empty($parsed_url[1])) {
     $stmt->execute();
 
     $stmt->bind_result($id);
-
+             
     $stmt->fetch();
 
     $stmt->close();
@@ -619,6 +616,9 @@ if (empty($parsed_url[1])) {
     $_SESSION["username"] = $user;
     $_SESSION["old_username"] = $username;
     $_SESSION["taken_over"] = true;
+
+} elseif ($parsed_url[1] == "create") {
+   $useless = "useless";
 
 } else {
     require "404.php";

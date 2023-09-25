@@ -81,6 +81,7 @@
     <body>
         <div class='center'>
             <div class='signup-text'>
+                <br>
                 <a href="/"><img src="https://OnlyGit-official.github.io/icons/small-logo.png" alt="logo" height="100" width="100" draggable="false"></img></a>
                 <h3>Welcome to OnlyGit!</h3>
                 
@@ -106,7 +107,7 @@
                             } elseif (!empty($parsed_url[3]) && $parsed_url[3] == "name") {
                                 echo "<h4 class='error'>Please enter your full name!</h4>";
                             } else {
-                                echo "<h4 class='signup-text'>We'll get you started in no time!</h4>";
+                               $useless = "Useless";
                             }
                         } elseif ($parsed_url[2] == "username"){
                             if (!empty($parsed_url[3]) && $parsed_url[3] == "invalid"){
@@ -114,15 +115,15 @@
                             } elseif (!empty($parsed_url[3]) && $parsed_url[3] == "taken"){
                                 echo "<h4 class='error'>The username you picked is unavaliable!</h4>";
                             } else {
-                                echo "<h4 class='signup-text'>We'll get you started in no time!</h4>";
+                               $useless = "Useless";
                             }
                         } elseif ($parsed_url[2] == "password") {
                             echo "<h4 class='error'>Please confirm your password!</h4>";
                         } else {
-                            echo "<h4 class='signup-text'>We'll get you started in no time!</h4>";
+                           $useless = "Useless";
                         }
                     } else {
-                        echo "<h4 class='signup-text'>We'll get you started in no time!</h4>";
+                       $useless = "Useless";
                     }
                 ?>
             </div>
@@ -141,9 +142,6 @@
             <br><br>
             <label>Enter a username:</label><br>
             <input type='text' name='username' size='100'>
-            <br><br>
-            <label>Enter your full name:</label><br>
-            <input type='text' name='name' size='100'>
             <br><br>
             <input type="submit" class="signup-button" value="Sign Up">
         </form>    
