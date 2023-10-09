@@ -46,7 +46,6 @@
                 margin-left: 20px;
                 margin-right: 20px;
                 padding: 40px;
-
             }
 
             .login-button {

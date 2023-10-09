@@ -31,6 +31,7 @@ function route($url): string {
         'logout' => 'logout',
         'admin' => 'admin',
         'create' => 'create',
+        'import' => 'import',
         'test' => 'test',
     ];
     if (empty($url[0])){

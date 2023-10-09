@@ -44,7 +44,7 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Wix Madefor Text">
     <script>
         function redirect(location){
-            window.location.replace(location)
+            window.location.replace(locationn)
         }
 
         function openTools(){
@@ -378,7 +378,6 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
                 foreach ($row as $contents) {
                     $id = $contents['id'];
                     $email = $contents['email'];
-                    $name = $contents['name'];
                     $suspended = $contents['suspended'];
                     $terminated = $contents['terminated'];
                     $admin = $contents['admin'];
