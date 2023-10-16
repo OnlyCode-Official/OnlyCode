@@ -727,6 +727,17 @@ if (empty($parsed_url[1])) {
     $visibility = $_POST['visibility'];
     $owner = $_POST['owner'];
 
+    $query = "SELECT `id` FROM `repos` WHERE `name` = ? AND `owner` = ?";
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "ss", $name, $owner);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_store_result($stmt);
+
+    if(mysqli_stmt_num_rows($stmt) == 1){
+        header("Location: /import/error/taken");
+        die();
+    }
+
     shell_exec("sudo mkdir -p /tmp/import/$owner");
 
     $git = "cd /tmp/import/$owner && sudo git clone --bare $giturl";
@@ -747,6 +758,12 @@ if (empty($parsed_url[1])) {
     shell_exec("sudo rm -rf /tmp/import/$owner/*");
     shell_exec("cd /show/$owner && sudo git clone ssh://root@0.0.0.0:/git/$owner/$name");
     header("Location: /");
+
+    $query = "INSERT INTO `repos` (`name`, `owner`, `visibility`, `collaborators`) VALUES (?, ?, ?, ?)";
+    $stmt = mysqli_prepare($conn, $query);
+    mysqli_stmt_bind_param($stmt, "ssss", $name, $owner, $visibility, $null);
+    mysqli_stmt_execute($stmt);
+    mysqli_stmt_close($stmt);
 
 } else {
     require "404.php";
