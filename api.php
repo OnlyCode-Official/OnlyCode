@@ -94,6 +94,12 @@ if (empty($parsed_url[1])) {
             } else {
                 die("Internal server error 500");
             }
+            $dir = "/show/$username";
+            if (mkdir($dir, 0755, true)) {
+                $useless = "useless";
+            } else {
+                die("Internal server error 500");
+            }
             shell_exec("sudo useradd -m -d /git/$username -p '*' -s /usr/sbin/nologin $username");
             shell_exec("sudo chown -R $username /git/$username");
             header("Location: /login");
@@ -697,11 +703,11 @@ if (empty($parsed_url[1])) {
    shell_exec("sudo chmod 777 $dir");
 
    shell_exec("git init --bare /git/$owner/$name");
-   shell_exec("cd /show && sudo git clone ssh://root@0.0.0.0:/git/$owner/$name");
+   shell_exec("cd /show/$owner && sudo git clone ssh://root@0.0.0.0:/git/$owner/$name");
    header("Location: /");
 } elseif ($parsed_url[1] == "import") {
     if (empty(trim($_POST['url']))) {
-        header("Location: /create/error/empty");
+        header("Location: /import/error/empty");
         die();
     } elseif (empty($_POST['owner'])) {
         echo "<script>redirect('https://www.youtube.com/watch?v=a3Z7zEc7AXQ')</script>";
@@ -709,11 +715,13 @@ if (empty($parsed_url[1])) {
     } elseif (empty($_POST['visibility'])) {
         echo "<script>redirect('https://www.youtube.com/watch?v=a3Z7zEc7AXQ')</script>";
         die("Dumbo dumb dumb");
+    } elseif (empty(trim($_POST['repo']))) {
+        echo "<script>redirect('https://www.youtube.com/watch?v=a3Z7zEc7AXQ')</script>";
+        die("Dumbo dumb dumb");
     }
 
-    if (isset($_POST['repo'])) {
-        $name = $_POST['repo'];
-    }
+    $name = $_POST['repo'];
+
 
     $giturl = $_POST['url'];
     $visibility = $_POST['visibility'];
@@ -729,17 +737,16 @@ if (empty($parsed_url[1])) {
 
     if ($failed !== 0) {
        header("Location: /import/error/failed");
+       die();
     }
 
     if (isset($name)){
-        shell_exec("sudo cd /tmp/import/$owner && mv * /git/$owner/$name");
-    } else {
-        shell_exec("cd /tmp/import/$owner && mv * /git/$owner");
+        shell_exec("cd /tmp/import/$owner && sudo mv * /git/$owner/$name");
     }
 
     shell_exec("sudo rm -rf /tmp/import/$owner/*");
-
-
+    shell_exec("cd /show/$owner && sudo git clone ssh://root@0.0.0.0:/git/$owner/$name");
+    header("Location: /");
 
 } else {
     require "404.php";

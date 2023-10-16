@@ -18,7 +18,7 @@ CREATE TABLE `users` (
 CREATE TABLE `repos` (
   `id` INT PRIMARY KEY NULL AUTO_INCREMENT,
   `name` VARCHAR(100) NOT NULL,
-  `description` TEXT NOT NULL,
+  `description` TEXT DEFAULT NULL,
   `visibility` VARCHAR(10) NOT NULL,
   `owner` VARCHAR(100) NOT NULL,
   `collaborators` TEXT NOT NULL,
