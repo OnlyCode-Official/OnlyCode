@@ -30,4 +30,3 @@ if ($use_root == 'false') {
     } 
     echo "YOU ARE USING THE ROOT USER! YOU MAY DAMAGE THE SERVER!";
 }
-

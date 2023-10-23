@@ -10,13 +10,14 @@
 </html>
 
 <?php
+require "dbconn.php";
 
 error_reporting(E_ALL);
 ini_set('display_errors', 1);
 
 require "checkBan.php";
 
-function route($url): string {
+function route($url, $conn): string {
     
     // print_r($url);
 
@@ -37,6 +38,12 @@ function route($url): string {
     if (empty($url[0])){
         return "home";
     }
+
+    // if $url[1] is not in routes, use PDO to check the database to check if it is a username
+    if (!array_key_exists($url[0], $routes)){
+        return "checkprofile"; 
+    }
+
     return $routes[$url[0]]??'404';
 
 }
@@ -52,17 +59,12 @@ foreach ($pathParts as $index => $part) {
     $parsed_url[$index] = $part;
 }
 
-$router_output = route($parsed_url);
+$router_output = route($parsed_url, $conn);
 
 // echo "$router_output";
 
 $file = $router_output . ".php";
 
 include "$file";
-
-include 'dbconn.php';
-
-
-
 
 ?>
