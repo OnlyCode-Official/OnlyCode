@@ -1,5 +1,5 @@
 <?php
-if (isset($_S0.ESSION['loggedin'])){
+if (isset($_SESSION['loggedin'])){
     $username = $_SESSION['username'];
     echo "
         <!DOCTYPE html>
@@ -16,7 +16,7 @@ if (isset($_S0.ESSION['loggedin'])){
         if ($repo == "." || $repo == ".."){
             continue;
         }
-        echo "$repo<br>";
+        echo "<a href='/$username/$repo'>$repo</a><br>";
     }
 
 } else {
