@@ -62,6 +62,7 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
         body {
             font-family: "Wix Madefor Text";
             background-color: #06081f;
+            height: 100%;
         }
 
         .sidenav {
@@ -148,7 +149,7 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
             display: none;
             position: fixed;
             z-index: 1;
-            padding-top: 100px; 
+            padding-top: 3px; 
             left: 0;
             top: 0;
             width: 100%;
