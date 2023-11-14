@@ -29,16 +29,39 @@ if (!empty($parsed_url[2])) {
         shell_exec("sudo git config --global --add safe.directory $owner/$repo");
         $branches = shell_exec("cd /show/$owner/$repo && sudo git branch");
 
-        //remove trailing spaces
         $branches_trimmed = trim($branches);
-        // remove the *
+
         $branches_final = str_replace("* ", "", $branches_trimmed);
 
         $branches_array = explode("\n", $branches_final);
 
-        // print array
         print_r($branches_array);
         echo "<br>";
+        
+        $target = $parsed_url[3];
+
+        if (!in_array($target, $branches_array)) {
+            require "404.php";
+            die();
+        }
+
+        shell_exec("cd /show/$owner/$repo && sudo git checkout $target");
+
+        $path_array = array_slice($parsed_url, 4);
+        // print_r($path_array);
+
+        $path_string = implode("/", $path_array);
+        // echo "<br>$path_string";
+
+        $path = "/show/$owner/$repo/" . $path_string;
+        echo "$path";
+
+        // check if path exists
+        if (!file_exists($path)) {
+            echo "<br>404";
+
+        }
+
         die();
     } elseif ($parsed_url[2] == "commits") {
 

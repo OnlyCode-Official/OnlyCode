@@ -20,8 +20,8 @@ require "checkBan.php";
 function route($url, $conn): string {
     
 
-    print_r($url);
-    echo "<br>";
+    // print_r($url);
+    // echo "<br>";
 
 
     if (file_exists($url[0])){
