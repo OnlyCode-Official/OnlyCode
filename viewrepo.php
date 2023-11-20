@@ -35,8 +35,8 @@ if (!empty($parsed_url[2])) {
 
         $branches_array = explode("\n", $branches_final);
 
-        print_r($branches_array);
-        echo "<br>";
+        // print_r($branches_array);
+        // echo "<br>";
         
         $target = $parsed_url[3];
 
@@ -45,7 +45,7 @@ if (!empty($parsed_url[2])) {
             die();
         }
 
-        shell_exec("cd /show/$owner/$repo && sudo git checkout $target");
+        shell_exec("cd /show/$owner/$repo && sudo git checkout $target && sudo git pull");
 
         $path_array = array_slice($parsed_url, 4);
         // print_r($path_array);
@@ -54,13 +54,42 @@ if (!empty($parsed_url[2])) {
         // echo "<br>$path_string";
 
         $path = "/show/$owner/$repo/" . $path_string;
-        echo "$path";
+        // echo "$path<br>";
 
         // check if path exists
         if (!file_exists($path)) {
-            echo "<br>404";
+            require "404.php";
+            die();
 
         }
+
+        // check if path is a directory
+        if (is_dir($path)) {
+            foreach (scandir($path) as $contents) {
+                if ($contents == "." || $contents == ".."){
+                    continue;
+                }
+                $fullpath = implode("/", $parsed_url);
+                // check if $fullpath ends with a slash
+                if (substr($fullpath, -1) == "/") {
+                    // delete the slash
+                    $fullpath = substr($fullpath, 0, -1);
+                }
+                $redirect = $fullpath . "/" . $contents;
+                echo "<a href='/$redirect'>$contents</a><br>";
+            }
+            die();
+        }
+
+        // print contents of file
+        $fs = filesize("$path");
+        $f = fopen($path, 'r');
+        $contents = fread($f, $fs);
+        fclose($f);
+
+        echo nl2br(htmlspecialchars($contents));
+
+
 
         die();
     } elseif ($parsed_url[2] == "commits") {
@@ -81,9 +110,4 @@ if (!empty($parsed_url[2])) {
 
 }
 
-foreach (scandir("/show/$owner/$repo") as $contents) {
-    if ($contents == "." || $contents == ".."){
-        continue;
-    }
-    echo "$contents<br>";
-}
+header("Location: /$owner/$repo/blob/master/");
