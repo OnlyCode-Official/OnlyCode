@@ -215,7 +215,7 @@ if (!isset($_SESSION["loggedin"])) {
             <span class="checkmark"></span>
         </label>
         <br>
-        <input type="submit" class="create-button" value="Create Repository">
+        <input type="submit" class="create-button" value="Import Repository">
     </form>
     <br><br><br>
 </div>

@@ -36,7 +36,7 @@ function route($url, $conn): string {
         'admin' => 'admin',
         'create' => 'create',
         'import' => 'import',
-        'test' => 'test',
+        // 'test' => 'test',
     ];
     if (empty($url[0])){
         return "home";

@@ -101,8 +101,10 @@ if (empty($parsed_url[1])) {
             } else {
                 die("Internal server error 500");
             }
-            shell_exec("sudo useradd -m -d /git/$username -p '*' -s /usr/sbin/nologin $username");
+            shell_exec("sudo useradd -m -d /git/$username -p '*' $username");
             shell_exec("sudo chown -R $username /git/$username");
+            shell_exec("sudo chsh -s $(which git-shell) $username");
+            shell_exec("sudo mkdir /git/$username/.ssh");
             header("Location: /login");
         } else{
             echo "500 Internal Server Error";
