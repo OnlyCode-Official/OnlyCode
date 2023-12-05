@@ -1,4 +1,6 @@
-![251798727-7ac7d36c-776a-425a-8483-42869eac73a1](https://github.com/OnlyGit-Official/OnlyGit/assets/88296644/588b7334-b0d9-4a52-b817-5eae9e9e2edb)
+![Screenshot 2023-09-03 at 7 50 17 PM](https://github.com/OnlyGit-Official/.github/assets/88296644/5efaf1e3-cfda-484e-a1e8-f3ffecf09e21)
+
+---
 
 # OnlyGit
 
