@@ -5,3 +5,6 @@
 # OnlyGit
 
 A *simp*le pull and play self hosted git solution.
+
+### Credits:
+- Wenqian Wang (@Hardwaregore)
