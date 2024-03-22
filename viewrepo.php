@@ -13,7 +13,7 @@ echo "
 
         .content {
             font-family: 'JetBrains Mono';
-            font-size: 20px;
+            font-size: 18px;
             padding-left: 20px;
         }
 
@@ -164,7 +164,7 @@ if (!empty($parsed_url[2])) {
         $contents = fread($f, $fs);
         fclose($f);
 
-        echo nl2br("<p class='content'>" . htmlspecialchars($contents ?? '') . "</p>");
+        echo nl2br("<pre class='content'>" . htmlspecialchars($contents ?? '') . "</pre>");
 
 
 
