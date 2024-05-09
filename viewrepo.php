@@ -1,4 +1,28 @@
 <?php
+require 'vendor/autoload.php';
+use Gravatar\Gravatar;
+$url = $_SERVER['REQUEST_URI'];
+$path = parse_url($url, PHP_URL_PATH);
+$pathParts = explode('/', ltrim($path, '/'));
+$parsed_url = [];
+
+foreach ($pathParts as $index => $part) {
+    $parsed_url[$index] = $part;
+}
+
+$owner = $parsed_url[0];
+
+$repo = $parsed_url[1];
+
+if(isset($_SESSION['email'])) {
+    $email = $_SESSION['email'];
+
+    $imageUrl = Gravatar::image($email, defaultImage: "identicon")->url();
+}
+
+if (empty($parsed_url[2])) {
+    header("Location: /$owner/$repo/blob/master/");
+}
 
 echo "
     <link rel='stylesheet' href='https://fonts.googleapis.com/css?family=Wix Madefor Text'>
@@ -15,6 +39,8 @@ echo "
             font-family: 'JetBrains Mono';
             font-size: 18px;
             padding-left: 20px;
+            
+            
         }
 
         .empty {
@@ -57,21 +83,107 @@ echo "
             display: inline-block;
             text-decoration: none;
         }
+
+        .topNav {
+            background: rgb(6, 20, 53);
+            width: 100%;
+            border-radius: 1rem;
+        }
+
+        .right-links {
+            float: right;
+            padding-right: 0.75rem;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            margin-top: 5px;
+            text-decoration: none;
+            border: none;
+        }
+        
+        .left-links {
+            padding-left: 0.75rem;
+            padding-top: 5px;
+            padding-bottom: 5px;
+            display: inline-block;
+        }
+        
+        .pfp {
+            border-radius: 30px;
+        }
+
+        .settings-sidenav {
+            border-radius: 1rem;
+            padding-left: 1rem;
+            padding-top: 2rem;
+            float: left;
+            height: 100%;
+            margin-left: 2rem;
+            margin-top: 2rem;
+        }
+
+        .settings-sidenav a {
+            color: white;
+            text-decoration: none;
+            font-size: 30px;
+        }
+
+        .settings-sidenav a:hover {
+            padding: 1rem;
+            height: 3rem;
+        }
+
+        .settings-general {
+            border: 1px solid white;
+            float: right;
+            margin-top: 4rem;
+        }
+            
     </style>
 ";
 
-$url = $_SERVER['REQUEST_URI'];
-$path = parse_url($url, PHP_URL_PATH);
-$pathParts = explode('/', ltrim($path, '/'));
-$parsed_url = [];
+ob_start();
 
-foreach ($pathParts as $index => $part) {
-    $parsed_url[$index] = $part;
-}
+echo "
+    <nav class='topNav'>
+    <div class='left-links'>
+        <a href='/' alt='home-button'><img src='https://OnlyGit-Official.github.io/icons/small-logo.png' width='50' height='50' alt='onlygit-logo'></a>
+    </div>
 
-$owner = $parsed_url[0];
+    <div class='right-links'>
 
-$repo = $parsed_url[1];
+    <a href='/create' alt='create-repo-button' style='padding-right: 0.75rem; text-decoration: none;'>
+        <span class='svg'>
+            <svg xmlns='http://www.w3.org/2000/svg' width='40' height='40' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-plus'><path d='M5 12h14'/><path d='M12 5v14'/></svg>
+        </span>
+    </a>
+
+    <a href='/issues' alt='issues-button' style='padding-right: 0.90rem; text-decoration: none;'>
+        <span class='svg'>
+            <svg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-circle-dot'><circle cx='12' cy='12' r='10'/><circle cx='12' cy='12' r='1'/></svg>
+        </span>
+    </a>
+
+    <a href='/pr' alt='pull-request-button' style='padding-right: 0.90rem; text-decoration: none;'>
+        <span class='svg'>
+            <svg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-git-pull-request-arrow'><circle cx='5' cy='6' r='3'/><path d='M5 9v12'/><circle cx='19' cy='18' r='3'/><path d='m15 9-3-3 3-3'/><path d='M12 6h5a2 2 0 0 1 2 2v7'/></svg>
+        </span>
+    </a>
+
+    <a href='/notifications' alt='notifications-button' style='padding-right: 0.90rem; text-decoration: none;'>
+        <span class='svg'>
+            <svg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-bell-ring'><path d='M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9'/><path d='M10.3 21a1.94 1.94 0 0 0 3.4 0'/><path d='M4 2C2.8 3.7 2 5.7 2 8'/><path d='M22 8c0-2.3-.8-4.3-2-6'/></svg>
+        </span>
+    </a>
+
+    <a href='/$username'>
+        <span class='svg'>
+            <img  class='pfp' src='$imageUrl' height='40' width='40'/>
+        </span>
+    </a>
+
+    </div>
+    </nav>
+";
 
 /*
     User/repo/mode/branch1/folder/folder/folder/file
@@ -86,6 +198,56 @@ if (!empty($parsed_url[2])) {
             require "404.php";
             die();   
         }
+
+        $query = "SELECT `visibility` FROM `repos` WHERE `name` = ? AND `owner` = ?";
+        $stmt = $conn->prepare($query);
+        $stmt->bind_param("ss", $parsed_url[1], $parsed_url[0]);
+        $stmt->execute();
+        $stmt->bind_result($visibility);
+        $stmt->fetch();
+        $stmt->close();
+
+        if ($visibility == "private"){
+
+            if (!isset($username)) {
+                ob_end_clean();
+                require "404.php";
+                die();
+            }
+
+            $query = "SELECT `id`, `admin` FROM `users` WHERE `username` = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("s", $username);
+            $stmt->execute();
+            $stmt->bind_result($id, $admin);
+            $stmt->fetch();
+            $stmt->close();
+
+            $query = "SELECT `collaborators` FROM `repos` WHERE `name` = ? AND `owner` = ?";
+            $stmt = $conn->prepare($query);
+            $stmt->bind_param("ss", $parsed_url[1], $parsed_url[0]);
+            $stmt->execute();
+            $stmt->bind_result($collaborators);
+            $stmt->fetch();
+            $stmt->close();
+            
+            if (empty($collaborators)) {
+                $collaborators = "[]";
+            }
+
+            $collab_array = json_decode($collaborators, true);
+            if (!in_array($username, $collab_array)) {
+                if ($id != 1 && $admin != true && $parsed_url[0] != $username){
+                    ob_end_clean();
+                    require "404.php";
+                    die();
+                }
+            }
+
+        }
+  
+
+
         shell_exec("sudo git config --global --add safe.directory $owner/$repo");
         $branches = shell_exec("cd /show/$owner/$repo && sudo git branch");
         shell_exec("cd /show/$owner/$repo && sudo git pull");
@@ -110,6 +272,7 @@ if (!empty($parsed_url[2])) {
         }
 
         if (!in_array($target, $branches_array)) {
+            ob_end_clean();
             require "404.php";
             die();
         }
@@ -129,6 +292,7 @@ if (!empty($parsed_url[2])) {
 
         // check if path exists
         if (!file_exists($path)) {
+            ob_end_clean();
             require "404.php";
             die();
 
@@ -164,9 +328,13 @@ if (!empty($parsed_url[2])) {
         $contents = fread($f, $fs);
         fclose($f);
 
-        echo nl2br("<pre class='content'>" . htmlspecialchars($contents ?? '') . "</pre>");
+        if(mb_check_encoding($contents, 'ASCII')) {
 
+            echo nl2br("<pre class='content'>" . htmlspecialchars($contents ?? '') . "</pre>");
 
+        } else {
+            echo "File Contains Non-Ascii Characters";
+        }
 
         die();
     } elseif ($parsed_url[2] == "commits") {
@@ -174,6 +342,22 @@ if (!empty($parsed_url[2])) {
     } elseif ($parsed_url[2] == "branches") {
         
     } elseif ($parsed_url[2] == "settings") {
+        echo "
+            <div class='settings-sidenav'>
+                <a href='/$parsed_url[0]/$parsed_url[1]/settings'><span class='svg'><svg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-cog'><path d='M12 20a8 8 0 1 0 0-16 8 8 0 0 0 0 16Z'/><path d='M12 14a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z'/><path d='M12 2v2'/><path d='M12 22v-2'/><path d='m17 20.66-1-1.73'/><path d='M11 10.27 7 3.34'/><path d='m20.66 17-1.73-1'/><path d='m3.34 7 1.73 1'/><path d='M14 12h8'/><path d='M2 12h2'/><path d='m20.66 7-1.73 1'/><path d='m3.34 17 1.73-1'/><path d='m17 3.34-1 1.73'/><path d='m11 13.73-4 6.93'/></svg></span> General Settings</a>
+                <br>
+                <br>
+                <a href='/$parsed_url[0]/$parsed_url[1]/settings/collaborators'><span class='svg'><svg xmlns='http://www.w3.org/2000/svg' width='30' height='30' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round' class='lucide lucide-users-round'><path d='M18 21a8 8 0 0 0-16 0'/><circle cx='10' cy='8' r='5'/><path d='M22 20c0-3.37-2-6.5-4-8a5 5 0 0 0-.45-8.3'/></svg></span> Collaborators</a>
+            </div>
+        ";
+
+        if(empty($parsed_url[3])){
+            echo "
+                <div class='settings-general'>
+                    <input type='text'></input>
+                </div>
+            ";
+        }
         
     } elseif ($parsed_url[2] == "analytics") {
         
@@ -183,8 +367,9 @@ if (!empty($parsed_url[2])) {
         
     } elseif ($parsed_url[2] == "wiki") {
         
+    } else {
+        ob_end_clean();
+        require "404.php";
     }
 
 }
-
-header("Location: /$owner/$repo/blob/master/");

@@ -7,6 +7,8 @@
     <link rel="icon shortcut" type="image/png" href="https://OnlyGit-official.github.io/icons/favicon.ico">
     <title></title>
 </head>
+<body>
+</body>
 </html>
 
 <?php

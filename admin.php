@@ -68,7 +68,7 @@ if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
         .sidenav {
             background: rgb(6, 20, 53);
             position: fixed;
-            top: 0;
+            top: 100;
             left: 0;
             width: 300px;
             height: 100%;

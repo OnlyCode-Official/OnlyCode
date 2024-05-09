@@ -123,7 +123,7 @@ if (empty($parsed_url[1])) {
         header("Location: /login/error");
     }
 
-    $query = "SELECT id, username, password FROM users WHERE username = ?";
+    $query = "SELECT id, username, email, password FROM users WHERE username = ?";
 
     if($stmt = mysqli_prepare($conn, $query)){
         mysqli_stmt_bind_param($stmt, "s", $username);
@@ -131,13 +131,14 @@ if (empty($parsed_url[1])) {
         if(mysqli_stmt_execute($stmt)){
             mysqli_stmt_store_result($stmt);
             if(mysqli_stmt_num_rows($stmt) == 1){
-                mysqli_stmt_bind_result($stmt, $id, $username, $hashed_password);
+                mysqli_stmt_bind_result($stmt, $id, $username, $email, $hashed_password);
                 if(mysqli_stmt_fetch($stmt)){
                     if(password_verify($password, $hashed_password)){
                         session_start();
                         $_SESSION["loggedin"] = true;
                         $_SESSION["id"] = $id;
                         $_SESSION["username"] = $username;
+                        $_SESSION["email"] = $email;
 
                         header("Location: /");
                     } else {

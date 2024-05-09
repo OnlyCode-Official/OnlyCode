@@ -21,14 +21,14 @@
                 text-align: center;
             }
 
-            .text {
-                border-style: solid;
-                border-radius: 10px;
-                border-color: rgba(116, 114, 114, 0.217);
-                padding: 1.5rem;
-                font-size: 23px;
-                width: 30rem;
-                text-align: left;
+            .leftnav {
+                border: 1px solid white;
+                padding: 1rem;
+                border-radius: 1rem;
+                float: left;
+                display: flex;
+                justify-content: center;
+                align-items: center;
             }
 
     </style>
